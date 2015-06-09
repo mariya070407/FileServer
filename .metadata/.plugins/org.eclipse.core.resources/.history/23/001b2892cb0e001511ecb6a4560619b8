@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"  
+    xmlns:p="http://primefaces.org/ui">  
+  
+    <h:head>  
+    </h:head>  
+      
+    <h:body>       
+        <h:form>		    			    
+			    <h3><h:outputText value="File Server" /></h3> 
+			    
+				<p:growl id="growl" showDetail="true" autoUpdate="true"/>
+				
+				<p:tabView>
+				    <p:tab title="Find">	
+                     
+                         <h:panelGrid columns="3" cellpadding="5">
+					        <h:outputLabel for="name" value="File Name:" style="font-weight:bold" />
+					        <p:inputText id="name" value="#{storedFiles.query}" />
+					        <p:commandButton value="Submit" update="display" icon="ui-icon-check" actionListener="#{storedFiles.submit}"/>        	
+					    </h:panelGrid>
+					    
+						<p:dataList value="#{storedFiles.queryResult}" var="files" type="ordered" id="display" rows="25">
+							 <f:facet name="header">
+							            Files
+							 </f:facet>
+							 #{files}
+						</p:dataList>		    
+
+        			</p:tab>
+				
+					<p:tab title="Download"> 
+					
+						<h:panelGrid columns="3" cellpadding="5">
+					        <h:outputLabel  value="File ID:"  />
+					        <p:inputText  value="#{fileDownloadView.downloadID}" />
+
+					        <p:commandButton value="Download" ajax="false" actionListener="#{fileDownloadView.prepDownload}"> 
+				                <p:fileDownload value="#{fileDownloadView.download}" />
+				            </p:commandButton>       	
+					    </h:panelGrid>
+							 		    
+			    	</p:tab>
+			    	
+			    	<p:tab title="Delete"> 
+					
+						<h:panelGrid columns="3" cellpadding="5">
+					        <h:outputLabel  value="File ID:"  />
+					        <p:inputText  value="#{fileDownloadView.downloadID}" />
+
+					        <p:commandButton value="Delete" ajax="false" actionListener="#{fileDownloadView.prepDownload}"> 
+				                <p:fileDownload value="#{fileDownloadView.download}" />
+				            </p:commandButton>       	
+					    </h:panelGrid>
+							 		    
+			    	</p:tab>
+			    	
+			    	<p:tab title="Upload">	
+							<p:growl id="messages" showDetail="true" />
+							<p:fileUpload mode="advanced" fileUploadListener="#{fileUploadView.upload}"  update="messages"/>
+			    	</p:tab>
+
+        		</p:tabView>
+        		
+        		
+        		
+		</h:form>           
+    </h:body>  
+</html>  

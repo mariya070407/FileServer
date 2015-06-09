@@ -1,0 +1,45 @@
+package util;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+@ManagedBean
+public class FileDeleteView {
+	private String deleteId;
+
+	public void deleteFile(){
+		try { 	
+		  //  File file = new File(findPath()); 
+		    Files.delete(Paths.get(findPath()));
+	/*	    if (file.delete()){
+		    
+			    System.out.println("File deleted" + file.getName());
+			    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful",  "File Deleted") );
+		    }
+		    else FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error",  "File don't deleted") );*/
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error",  "File don't deleted") );
+		}
+	}
+	
+	private String findPath(){
+		return FacesContext.getCurrentInstance().getExternalContext().getRealPath("/UploadedFiles")+StoredFiles.files.get(deleteId);
+	}
+
+	public String getDeleteId() {
+		return deleteId;
+	}
+
+	public void setDeleteId(String deleteId) {
+		this.deleteId = deleteId;
+	}
+	
+
+}

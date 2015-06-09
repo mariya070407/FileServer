@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+<f:view contentType="text/html; charset=UTF-8"/>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Insert title here</title>
+</head>
+<h:body>
+
+	<h:form>
+			    <p:growl id="messages" showDetail="true" />
+			    			    
+			    <h3><h:outputText value="Файловый менеджер" /></h3> 
+				
+				<p:tabView>
+				    <p:tab title="Файлы на сервере">	
+						<p:fragment autoUpdate="true">	
+        				
+						</p:fragment>
+        			</p:tab>
+				
+					<p:tab title="Загрузка файлов"> 
+	 		    		
+			    	</p:tab>
+			    	
+			    	<p:tab title="Скачивание файлов">	
+			    		<p:fragment autoUpdate="true">
+							<p:growl id="messages" showDetail="true" />
+							<p:fileUpload value="#{fileUploadView.file}" mode="advanced" fileUploadListener="#{fileUploadView.upload}" sizeLimit="2000000" allowTypes="/(\.|\/)(txt)$/" update="messages"  />
+			    		</p:fragment>
+			    	</p:tab>
+
+        		</p:tabView>
+        		
+        		
+        		<h:panelGrid columns="1" cellpadding="5">
+    <p:commandButton value="Basic" type="button" onclick="PF('dlg1').show();" />
+ 
+    <p:commandButton value="Modal" type="button" onclick="PF('dlg2').show();" />
+ 
+    <p:commandButton value="Effects" type="button" onclick="PF('dlg3').show();" /> 
+</h:panelGrid>
+ 
+<p:dialog header="Basic Dialog" widgetVar="dlg1" minHeight="40">
+    <h:outputText value="Resistance to PrimeFaces is futile!" />
+</p:dialog>
+ 
+<p:dialog header="Modal Dialog" widgetVar="dlg2" modal="true" height="100">
+    <h:outputText value="This is a Modal Dialog." />
+</p:dialog>   
+ 
+<p:dialog header="Effects" widgetVar="dlg3" showEffect="explode" hideEffect="bounce" height="100">
+    <h:outputText value="This dialog has nice effects." />
+</p:dialog>
+	</h:form>
+
+</h:body>
+</html>

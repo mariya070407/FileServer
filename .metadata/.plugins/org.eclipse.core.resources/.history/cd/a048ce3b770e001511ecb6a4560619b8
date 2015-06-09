@@ -1,0 +1,28 @@
+package download;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+@ManagedBean(name="downloadBean")
+public class FileDownloadView {
+    private String path;
+    private String contentType;
+
+    public void downloadAction() {
+        path = "C:/0101.txt";
+        contentType = FacesContext.getCurrentInstance().getExternalContext().getMimeType(path);
+    }
+
+    public StreamedContent getdFile() throws IOException {
+        return new DefaultStreamedContent(new FileInputStream(path), contentType);
+    }
+}

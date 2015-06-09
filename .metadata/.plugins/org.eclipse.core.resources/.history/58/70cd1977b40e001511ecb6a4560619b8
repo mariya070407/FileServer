@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"  
+    xmlns:p="http://primefaces.org/ui">  
+  
+    <h:head>  
+    </h:head>  
+      
+    <h:body>       
+        <h:form>		    			    
+			    <h3><h:outputText value="Файловый менеджер" /></h3> 
+				
+				<p:tabView>
+				    <p:tab title="Файлы на сервере">	
+                         <p:commandButton value="Files" ajax="false" actionListener="#{storedFiles.oo}"/> 
+                         
+                         <p:dataList value="#{storedFiles.files}" var="car" type="ordered">
+					        <f:facet name="header">
+					            Files
+					        </f:facet>
+					        #{car}
+					    </p:dataList>
+        			</p:tab>
+				
+					<p:tab title="Download"> 
+							 <p:commandButton value="Download" ajax="false" actionListener="#{fileDownloadView.prepDownload}"> 
+				                <p:fileDownload value="#{fileDownloadView.download}" />
+				            </p:commandButton>		    
+			    	</p:tab>
+			    	
+			    	<p:tab title="Upload">	
+							<p:growl id="messages" showDetail="true" />
+							<p:fileUpload mode="advanced" fileUploadListener="#{fileUploadView.upload}"  update="messages"/>
+			    	</p:tab>
+
+        		</p:tabView>
+        		
+        		
+        		
+		</h:form>           
+    </h:body>  
+</html>  

@@ -1,0 +1,52 @@
+package util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+@ManagedBean
+public class StoredFiles {
+	private Map<String, String> files;
+
+	public StoredFiles() {
+		files=new HashMap<String, String>();
+		
+		String path=FacesContext.getCurrentInstance().getExternalContext().getRealPath("/UploadedFiles");
+		File []fList;        
+		File F = new File(path);
+		        
+		fList = F.listFiles();
+		                
+		for(int i=0; i<fList.length; i++)           
+		{
+		     if(fList[i].isFile())
+		     {
+		         System.out.print("!!!"+String.valueOf(i) + " - " + fList[i].getName());
+		         try {
+					String hash=MD5CheckSum.getMD5(new FileInputStream(fList[i].getPath()));
+					files.put(hash,fList[i].getName());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+		         
+		     }
+		}
+
+		
+	}
+	
+	public void oo()	{}
+	
+	public Map<String, String> getFiles() {
+		return files;
+	}
+
+	public void setFiles(Map<String, String> files) {
+		this.files = files;
+	}
+}

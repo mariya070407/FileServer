@@ -1,0 +1,177 @@
+package upload;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+
+@ManagedBean(name="fileUploadController")
+public class FileUploadView {
+	   private String destination="D:\\tmp\\";
+	   
+	    public void upload(FileUploadEvent event) {  
+	        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
+	        FacesContext.getCurrentInstance().addMessage(null, msg);
+	        // Do what you want with the file        
+	        try {
+	            copyFile(event.getFile().getFileName(), event.getFile().getInputstream());
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	 
+	    }  
+	 
+	    public void copyFile(String fileName, InputStream in) {
+	           try {
+	              
+	              
+	                // write the inputStream to a FileOutputStream
+	                OutputStream out = new FileOutputStream(new File(destination + fileName));
+	              
+	                int read = 0;
+	                byte[] bytes = new byte[1024];
+	              
+	                while ((read = in.read(bytes)) != -1) {
+	                    out.write(bytes, 0, read);
+	                }
+	              
+	                in.close();
+	                out.flush();
+	                out.close();
+	              
+	                System.out.println("New file created!");
+	                } catch (IOException e) {
+	                System.out.println(e.getMessage());
+	                }
+	    }
+	/*private UploadedFile file;
+	 
+    public UploadedFile getFile() {
+        return file;
+    }
+ 
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+     
+    public void upload() {
+        if(file != null) {
+            FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+    
+    
+    public void upload(FileUploadEvent event)throws IOException{
+    	//System.out.println("!!!!!!!!!!!!!!! "+file.getFileName());
+    	try {    		
+    		File targetFolder = new File("D:\\testDir\\");    		
+ 
+    		try(InputStream inputStream = event.getFile().getInputstream()) {
+    			try(OutputStream out = new FileOutputStream(new File(targetFolder,event.getFile().getFileName()))) {
+    				int read = 0;
+        			byte[] bytes = new byte[1024];
+        			
+        			while ((read = inputStream.read(bytes)) != -1) {        				        			
+        				out.write(bytes, 0, read);
+        			}
+    			}    		
+    		} 
+    	} catch (IOException e) {			
+			e.printStackTrace();
+		}    	
+    	System.out.println("File was successfully loaded!");*/
+    	/*
+		UploadedFile file = event.getFile();
+        System.out.println(file.getFileName());
+        byte[] file_content=file.getContents();
+       
+		SChunkFirmware firm = null;
+        byte[] head = null;
+        SChunkFirmwareHeader firm_header = null;
+        SStr company_name = SMem.newSStr();
+
+        try {
+        	SValidateFirmware validator = new SValidateFirmware(file_content);
+            if (!validator.isValid()){
+            	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page310.17")));
+                SMem.freeSStr(company_name);
+                return;
+            }
+        } catch (Exception efirm){
+        	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page310.17")));
+        	return;
+        }
+        
+        try {
+            firm = new SChunkFirmware(file_content);
+            head = SMem.newByteArray(SChunkFirmwareHeader.CHK_HEADERSIZE);
+            firm.getHeader(head);
+            firm_header = new SChunkFirmwareHeader(head);
+            firm_header.getCompanyName(company_name);
+
+            StringBuilder sql = new StringBuilder();
+            
+            sql.append("SELECT count(*) AS cnt FROM aegis_firmware WHERE file_ver = ").append(firm_header.getFileVersion())
+               .append(" AND comp = ").append(firm_header.getComprType())
+               .append(" AND company = '").append(company_name).append("'")
+               .append(" AND device_module = ").append(firm_header.getModule())
+               .append(" AND maj_ver = ").append(firm_header.getMajorVer())
+               .append(" AND min_ver = ").append(firm_header.getMinorVer())
+               .append(" AND pat_ver = ").append(firm_header.getPatchVer());
+            
+            if(pl.getDb().getCountRows(sql.toString())!=0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page310.18")));
+                SMem.freeSStr(company_name);
+                return;
+            }
+
+        } catch (Exception efirm){
+        	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page310.17")));
+        	return;
+        }
+        SMem.freeByteArray(head);
+
+        // The values didn't create an exception so we go on.
+        // Query string used for the actual insert into the database.
+        try{
+        StringBuffer build_string = new StringBuffer();
+        build_string.append("INSERT INTO aegis_firmware (firmware_id, creation_ts, file_ver, company, comp, device_module, maj_ver, min_ver, pat_ver, cont_chunks, firmware) VALUES (") 
+        			.append(pl.getDb().getID("aegis_firmware", "firmware_id"))
+        			.append(", ") 
+        			.append("CURRENT_TIMESTAMP, ") 
+                    .append(firm_header.getFileVersion()).append(", '") 
+                    .append(company_name).append("', ") 
+                    .append(firm_header.getComprType()).append(", ") 
+                    .append(firm_header.getModule()).append(", ") 
+                    .append(firm_header.getMajorVer()).append(", ") 
+                    .append(firm_header.getMinorVer()).append(", ") 
+                    .append(firm_header.getPatchVer()).append(", ") 
+                    .append(firm_header.getContingencyAmt()).append(", ?)"); 
+
+        SMem.freeSStr(company_name);
+
+        if (pl.getDb().insert(build_string.toString(),file_content)){
+            // With the record in place we can now get a record and update to it.
+            // We also need to store the contingency chunks that we get from the file.
+            FacesContext.getCurrentInstance().getExternalContext().redirect("SPage_310_Firmware_Manager.xhtml");
+        } else {      
+            // The insert failed and the user should be notified.
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page0.2")));
+        }
+        build_string=null;
+    } catch (Exception ex) {    
+    	FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, pl.getMessages().getString("page0.1"), pl.getMessages().getString("page0.2")));
+    	return;
+    } */
+//	}
+
+}

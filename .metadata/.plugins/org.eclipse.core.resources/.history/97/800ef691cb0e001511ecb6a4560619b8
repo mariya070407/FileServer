@@ -1,0 +1,22 @@
+package util;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+@ManagedBean
+public class FileDeleteView {
+	private String deleteId;
+
+	
+	private String findPath(){
+		return FacesContext.getCurrentInstance().getExternalContext().getRealPath("/UploadedFiles")+"/"+StoredFiles.files.get(deleteID);
+	}
+	
+	public String getDeleteId() {
+		return deleteId;
+	}
+
+	public void setDeleteId(String deleteId) {
+		this.deleteId = deleteId;
+	}
+}

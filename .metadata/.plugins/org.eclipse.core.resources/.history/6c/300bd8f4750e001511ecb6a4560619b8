@@ -1,0 +1,37 @@
+package download;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.faces.bean.ManagedBean;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+@ManagedBean
+public class FileDownloadView {
+    private StreamedContent dFile;
+
+    public StreamedContent getdFile() {
+        return dFile;
+    }
+
+    public void setdFile(StreamedContent dFile) {
+        this.dFile = dFile;
+    }
+
+    /**
+     * This Method will be called when download link is clicked
+     */
+    public void downloadAction()
+    {
+        File tempFile = new File("C:/0101.txt");
+        try {
+            dFile = new DefaultStreamedContent(new FileInputStream(tempFile), new MimetypesFileTypeMap().getContentType(tempFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
